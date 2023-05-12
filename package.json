@@ -1,15 +1,19 @@
 {
   "name": "web3auth-firebase",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "index.ts",
   "repository": "git@github.com:acolls-g4al/web3auth-firebase.git",
   "author": "<acolls@g4al.com>",
   "license": "MIT",
+  "scripts": {
+    "start": "ts-node index.ts"
+  },
   "dependencies": {
     "@web3auth/base": "^5.2.0",
     "@web3auth/no-modal": "^5.2.0",
     "@web3auth/openlogin-adapter": "^5.2.0",
     "firebase": "^9.21.0",
+    "firebase-admin": "^11.8.0",
     "web3": "^1.10.0"
   }
 }
