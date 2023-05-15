@@ -3,8 +3,9 @@ import {
   CHAIN_NAMESPACES,
   SafeEventEmitterProvider,
 } from "@web3auth/base";
-import { Web3AuthNoModal } from "@web3auth/no-modal";
-import { OpenloginAdapter } from "@web3auth/openlogin-adapter";
+// import { Web3AuthNoModal } from "@web3auth/no-modal";
+// import { OpenloginAdapter } from "@web3auth/openlogin-adapter";
+import { Web3Auth, LoginParams } from "@web3auth/node-sdk";
 // import { initializeApp } from "firebase/app";
 // import {
 //   GoogleAuthProvider,
@@ -41,6 +42,10 @@ import { OpenloginAdapter } from "@web3auth/openlogin-adapter";
 //   return await loginRes.user.getIdToken(true); // idToken
 // };
 
+function parseJwt(token: string) {
+  return JSON.parse(Buffer.from(token.split(".")[1], "base64").toString());
+}
+
 const web3authLogin = async () => {
   const WEB3AUTH_CLIENT_ID =
     "BCUDbtKqHKHHp_juQ4fd-vekT41t2MBTANNjxcysVGfeJoBzW2RVaTNKqUaxMjF6t-daed_3NRVDgNqWhnw4dHk";
@@ -54,55 +59,60 @@ const web3authLogin = async () => {
     ticker: "BNB",
     tickerName: "BNB",
   };
-  const web3auth = new Web3AuthNoModal({
+  const web3auth = new Web3Auth({
     clientId: WEB3AUTH_CLIENT_ID,
     web3AuthNetwork: "testnet",
     chainConfig: CHAIN_CONFIG,
   });
 
-  const openloginAdapter = new OpenloginAdapter({
-    adapterSettings: {
-      // clientId: "YOUR-WEB3AUTH-CLIENT-ID", // Optional - Provide only if you haven't provided it in the Web3Auth Instantiation Code
-      uxMode: "redirect",
-      loginConfig: {
-        jwt: {
-          name: "g4al-id", // any name
-          verifier: "g4al-chain",
-          typeOfLogin: "jwt",
-          clientId: WEB3AUTH_CLIENT_ID,
-        },
-      },
-    },
-  });
+  // const openloginAdapter = new OpenloginAdapter({
+  //   adapterSettings: {
+  //     // clientId: "YOUR-WEB3AUTH-CLIENT-ID", // Optional - Provide only if you haven't provided it in the Web3Auth Instantiation Code
+  //     uxMode: "redirect",
+  //     loginConfig: {
+  //       jwt: {
+  //         name: "g4al-id", // any name
+  //         verifier: "g4al-chain",
+  //         typeOfLogin: "jwt",
+  //         clientId: WEB3AUTH_CLIENT_ID,
+  //       },
+  //     },
+  //   },
+  // });
 
-  web3auth.configureAdapter(openloginAdapter);
+  // web3auth.configureAdapter(openloginAdapter);
 
-  await web3auth.init();
+  web3auth.init();
 
-  return web3auth;
-};
-const web3auth = web3authLogin();
-
-const loginWeb3Auth = async () => {
   const gToken =
-    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJXMjJnQkF0Wk9KT0J6eHhSUzlGNjZ0eGQxQTAzIiwiY2xhaW1zIjp7ImVtYWlsIjoiYWNvbGxzQGc0YWwuY29tIiwid2FsbGV0X2FkZHJlc3MiOm51bGx9LCJpc3MiOiJnZmFsLWlkLWFwaUBnNGFsLWNoYWluLmlhbS5nc2VydmljZWFjY291bnQuY29tIiwic3ViIjoiZ2ZhbC1pZC1hcGlAZzRhbC1jaGFpbi5pYW0uZ3NlcnZpY2VhY2NvdW50LmNvbSIsImF1ZCI6Imh0dHBzOi8vaWRlbnRpdHl0b29sa2l0Lmdvb2dsZWFwaXMuY29tL2dvb2dsZS5pZGVudGl0eS5pZGVudGl0eXRvb2xraXQudjEuSWRlbnRpdHlUb29sa2l0IiwiZXhwIjoxNjgzOTA3NzEwLCJpYXQiOjE2ODM5MDQxMTB9.E6A5hGuixnziePf5pvuUQTUm5CDsDyXDV1IJ3r9lLRYvIIPQi011y4HkY2ln1KozhJml2IvaMP-UA5tKU7uKSE7zTOMHWTw9FgC1p9QvEtTim2avwr2ctVXleMceJAMAc57-qG7Ku8WEkQV5_mZpNldcSHft-DBmb8603sBTZLvGfcZ3F9HLB1vAiub-MA4EzrGjNuw0iBIkkmNLfGBk5UuG_L0OhMGybBNAN1W_kelUxS6uahYDJa1XzBjK477J8mlYSCHKgvSvkGhlAQyo07fSz2J_ksR7wbmyB9BWK-m0JhfHgJUpYqcvwEr5oNUsWSXXuNvBUAAz6qjczzBVuw";
+    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJXMjJnQkF0Wk9KT0J6eHhSUzlGNjZ0eGQxQTAzIiwiY2xhaW1zIjp7ImVtYWlsIjoiYWNvbGxzQGc0YWwuY29tIiwid2FsbGV0X2FkZHJlc3MiOm51bGx9LCJpc3MiOiJnZmFsLWlkLWFwaUBnNGFsLWNoYWluLmlhbS5nc2VydmljZWFjY291bnQuY29tIiwic3ViIjoiZ2ZhbC1pZC1hcGlAZzRhbC1jaGFpbi5pYW0uZ3NlcnZpY2VhY2NvdW50LmNvbSIsImF1ZCI6Imh0dHBzOi8vaWRlbnRpdHl0b29sa2l0Lmdvb2dsZWFwaXMuY29tL2dvb2dsZS5pZGVudGl0eS5pZGVudGl0eXRvb2xraXQudjEuSWRlbnRpdHlUb29sa2l0IiwiZXhwIjoxNjg0MTY1MTg3LCJpYXQiOjE2ODQxNjE1ODd9.PHDlsrCVa5BSUmqqcqKUel4ILqGVmFRbdIfPxgnIL4uNAtMmNx9eV98rjR5oQV47tYhwAkPPrDHsf2NHqXlh-HbvEH5QjjrY4nxnBziBeYBSlCM4fKE4K54Nn2DYKLeOXr8v-q5vZXfvDPuiWi3IUmzIygoMf-YdIZAzUYG_qNS7gBx_s30G2kX52xZkCqblnW8jkibQW0-cNcfjz3KCox8iEF1xL4ULniEKDukTfXhfcwFYMSWUPHg41v0x0-GMTxAjtZc_kI_4zTHzIR2B5zjvD-kM1CmRk_IUNRu5-4XdabX22pvjlpz_gfSmMz5Bg1QB0KreGZz6M8Xq59YtzQ";
 
-  const connect = await web3auth.connectTo(WALLET_ADAPTERS.OPENLOGIN, {
-    loginProvider: "jwt",
-    extraLoginOptions: {
-      id_token: gToken,
-      verifierIdField: "g4al-chain", // same as your JWT Verifier ID
-      domain: "https://YOUR-APPLICATION-DOMAIN" || "http://localhost:8080",
-    },
-  });
+  const jwtToken = parseJwt(gToken);
 
+  console.log(jwtToken);
+  // const connect = await web3auth.connectTo(WALLET_ADAPTERS.OPENLOGIN, {
+  //   loginProvider: "jwt",
+  //   extraLoginOptions: {
+  //     id_token: gToken,
+  //     verifierIdField: "g4al-chain", // same as your JWT Verifier ID
+  //     domain: "https://YOUR-APPLICATION-DOMAIN" || "http://localhost:8088",
+  //   },
+  // });
+
+  const loginParams: LoginParams = {
+    verifier: "g4al-chain",
+    verifierId: jwtToken.sub,
+    idToken: gToken,
+  };
+
+  const connect = await web3auth.connect(loginParams);
   console.log(connect);
 
-  const user = await web3auth.getUserInfo();
+  console.log(web3auth.provider);
 
-  console.log("User info", user);
+  // console.log("User info", user);
 
-  await web3auth.logout();
+  // await web3auth.logout();
 };
 
-loginWeb3Auth();
+web3authLogin();
