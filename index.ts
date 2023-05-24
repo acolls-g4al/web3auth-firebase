@@ -3,44 +3,44 @@ import {
   CHAIN_NAMESPACES,
   SafeEventEmitterProvider,
 } from "@web3auth/base";
-// import { Web3AuthNoModal } from "@web3auth/no-modal";
-// import { OpenloginAdapter } from "@web3auth/openlogin-adapter";
+import { Web3AuthNoModal } from "@web3auth/no-modal";
+import { OpenloginAdapter } from "@web3auth/openlogin-adapter";
 import { Web3Auth, LoginParams } from "@web3auth/node-sdk";
-// import { initializeApp } from "firebase/app";
-// import {
-//   GoogleAuthProvider,
-//   getAuth,
-//   signInWithPopup,
-//   UserCredential,
-// } from "firebase/auth";
+import { initializeApp } from "firebase/app";
+import {
+  GoogleAuthProvider,
+  getAuth,
+  signInWithPopup,
+  UserCredential,
+} from "firebase/auth";
 
-// const FIREBASE_CONFIG = {
-//   apiKey: "AIzaSyB224lOyA2EwfEEKpfMcrcVX719mx6tcQE",
-//   authDomain: "g4al-chain.firebaseapp.com",
-//   projectId: "g4al-chain",
-//   storageBucket: "g4al-chain.appspot.com",
-//   messagingSenderId: "82478128277",
-//   appId: "1:82478128277:web:81a4304e68c7b22cba4f9c",
-//   measurementId: "G-TTD8PF21GN",
-// };
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyB224lOyA2EwfEEKpfMcrcVX719mx6tcQE",
+  authDomain: "g4al-chain.firebaseapp.com",
+  projectId: "g4al-chain",
+  storageBucket: "g4al-chain.appspot.com",
+  messagingSenderId: "82478128277",
+  appId: "1:82478128277:web:81a4304e68c7b22cba4f9c",
+  measurementId: "G-TTD8PF21GN",
+};
 
-// const signInWithGoogle = async (): Promise<UserCredential> => {
-//   try {
-//     const app = initializeApp(FIREBASE_CONFIG);
-//     const auth = getAuth(app);
-//     const googleProvider = new GoogleAuthProvider();
-//     const res = await signInWithPopup(auth, googleProvider);
-//     return res;
-//   } catch (err) {
-//     console.error(err);
-//     throw err;
-//   }
-// };
+const signInWithGoogle = async (): Promise<UserCredential> => {
+  try {
+    const app = initializeApp(FIREBASE_CONFIG);
+    const auth = getAuth(app);
+    const googleProvider = new GoogleAuthProvider();
+    const res = await signInWithPopup(auth, googleProvider);
+    return res;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+};
 
-// const getGoogleToken = async () => {
-//   const loginRes = await signInWithGoogle();
-//   return await loginRes.user.getIdToken(true); // idToken
-// };
+const getGoogleToken = async () => {
+  const loginRes = await signInWithGoogle();
+  return await loginRes.user.getIdToken(true); // idToken
+};
 
 function parseJwt(token: string) {
   return JSON.parse(Buffer.from(token.split(".")[1], "base64").toString());
@@ -65,22 +65,22 @@ const web3authLogin = async () => {
     chainConfig: CHAIN_CONFIG,
   });
 
-  // const openloginAdapter = new OpenloginAdapter({
-  //   adapterSettings: {
-  //     // clientId: "YOUR-WEB3AUTH-CLIENT-ID", // Optional - Provide only if you haven't provided it in the Web3Auth Instantiation Code
-  //     uxMode: "redirect",
-  //     loginConfig: {
-  //       jwt: {
-  //         name: "g4al-id", // any name
-  //         verifier: "g4al-chain",
-  //         typeOfLogin: "jwt",
-  //         clientId: WEB3AUTH_CLIENT_ID,
-  //       },
-  //     },
-  //   },
-  // });
+  const openloginAdapter = new OpenloginAdapter({
+    adapterSettings: {
+      // clientId: "YOUR-WEB3AUTH-CLIENT-ID", // Optional - Provide only if you haven't provided it in the Web3Auth Instantiation Code
+      uxMode: "redirect",
+      loginConfig: {
+        jwt: {
+          name: "g4al-id", // any name
+          verifier: "g4al-chain",
+          typeOfLogin: "jwt",
+          clientId: WEB3AUTH_CLIENT_ID,
+        },
+      },
+    },
+  });
 
-  // web3auth.configureAdapter(openloginAdapter);
+  web3auth.configureAdapter(openloginAdapter);
 
   web3auth.init();
 
